@@ -1,92 +1,46 @@
-# Trebuchet
-A MUD/MUCK/MUSH chat client with MCP/GUI support.
+# THIS IS A FORK FROM OFFICAL [TREBUCHET](https://github.com/fuzzball-muck/trebuchet)
 
-# What This Is:
+    "Why? Because fork you, that's why."
 
-This is Trebuchet Tk, a MUD client written purely in TCL/Tk 8
+## But no really, why?
+Trebuchet is my fave mu-client. I can take it from one OS to the next and not have to worry about it.  It's simple, effective, and has the features I need for what I'm doing.
 
-(For those of you who are wondering what a MUD is, it's kind of a chat or
-role play system, somewhat like IRC.  However, MUDs have the concept of
-persistent areas and objects, each with text descriptions and many ways to
-interact with them.  Most MUDs also allow users to create programs to make
-new ways to interact with their environment.)
+Sadly, it has been lacking in updates just a touch too long, and now it's tls/ssl support seems to break on updated(? Different?) TCL installs on some oses.
+It still seems to work on old activestate TCL windows installs, but as nobody can download tcl/tk for windows from Activestate anymore because activestate went full SaaS-cancer mode, 
+and oh look, tons and tons of comunity downloads WERE hosted on the activestate website, which are all DEAD now..
 
-Trebuchet lets you connect to various internet MUDs with a nicer interface
-than the usual run of the mill telnet clients.  Trebuchet is designed to
-be as powerful as (if not more than!) tinyfugue, and it will allow some-
-thing that no other client I know of will: You can write GUI interfaces
-with its internal TCL/Tk 8 scripting language.  This means that scripts
-can be created to make it much easier to interface with the complex MUD
-command line interface.
+..Then nobody updates the old websites..
 
-Imagine, if you will, being able to edit the objects in the world with
-a GUI interface, instead of having to remember all the ugly commands.
-Being able to edit lists in a nice GUI editor without having to deal
-with the nasty line-at-a-time list editor that MUCKs provide.
+Now TCL life is painful. 
 
-There is nothing about the Trebuchet client that is specific to MUCK,
-however.  You could use this client with MUSH, MUSE, or old TinyMUD,
-and write scripts that will interface with each of them specifically.
+(Thanks activestate. You suck by the way.)
 
+### Okay, and then?
+  
+Then I switched to a different TCl/tk install for some machines, and all *hell* broke loose where Trebuchet was concerned. SSL took a complete nose dive, file loads were freaking out. 
 
-# System Requirements
+ttk errors!
 
-Since Trebuchet is written in the TCL/Tk language, it has been tested
-under, and will run on Unix with X11, Mac OS X and Windows.
+THE LOGO WAS NOT PERFECTLY CENTERED.
 
-Trebuchet Tk will probably run slow on a 486, or a 68k CPU, but I
-haven't tried it myself  Give it a try.  Who knows, it may still run
-reasonably.  You will probably need at least 32 megs of RAM, also.
+It was madness. MADNESS! 
 
+So I went snooping into the code.
 
-# Features:
+    "Well I guess I could fix that for myself.."
+    "This bug isn't too bad.."
+    "Oh, I could fix this too. pffh, ez mode."
 
-This client has the following features (and more) currently implemented:
-- Color hilighting of lines and words based on patterns
-- Triggering execution of scripts based on patterns
-- Keeps track of your worlds, characters, and passwords, so you don't have to keep entering them manually.
-- Command line macros to help you automate complex tasks.
-- Keyboard bindings to perform commands with one or two keystrokes.
-- QuickButtons to perform commands at the click of a mouse button.
-- Can generate dynamic GUI dialogs upon server request.
-- Supports SSL encrypted connections, with the tcltls package.
-- Input command line history.
-- Tab word completion, based on the last N lines of scrollback.
-- Simultaneous multi-connection support.
-- Quoting of text files to connections.
-- Nearly all GUI features have command-line equivalents.
+# And down the rabbit hole I went.
 
+And now here we are, you poor sod.
 
-# UNIX/Linux Installation:
+Anyways, I'm running this against BAWT `Tcl 8.6.17 Batteries Included (64 bit)` from [here](https://www.bawt.tcl3d.org/download.html#tclbi) which is pretty nice, truth be told. 
+(I like it, at least. And I hate eveyrthing.), at least for windows machines. *nix machines i'm just running it rawdog off whatever 8.6+ TCL/tk is included in the OS.
 
-This assumes that you already have TCL/Tk (AKA 'wish') already installed
-on your unix/linux system, and that the 'wish' program is in your $PATH.
-If you don't have wish installed, you will want to either get the TCL/Tk
-packages from your OS vendor (RedHat, Debian, etc.) or you may fetch the
-sources from https://www.tcl.tk/.  You need TCL/Tk version 8.0.5 or later.
+YMMV, but probabbly (hopefully?) not.
 
-Un-gzip the tarfile:
+I'm mostly just going to chase down bugfixes, and maybe nail a todo here or there if it's something I might find handy. 
+This is practically a 'for my own use' git, but I figured i'd leave it open so anybody else who might want to use it can, and maybe the treb devs can pull something useful out of it.
 
-    gunzip TrebTk10aXX.tar.gz
-
-Untar the tarfile:
-
-    tar xf TrebTk10aXX.tar
-
-Move the directory structure that you unpacked to someplace convenient:
-
-    mv TrebTk10aXX /usr/local/trebtk
-
-Make a softlink from a convenient directory that is in your $PATH, linking
-to the Trebuchet.tcl file:
-
-    cd /usr/local/bin
-    ln -s /usr/local/trebtk/Trebuchet.tcl treb
-
-Then when you want to run Trebuchet, just invoke the 'treb' softlink.
-NOTE:  The Trebuchet.tcl file MUST be located in the same directory as
-the 'lib' and 'docs' directories.  Otherwise it won't be able to find
-the libraries it needs to run.  This is why you make a softlink to the
-Trebuchet.tcl file, instead of moving it.
-
-
+Don't open an issue without a detailed error log or details or steps to recreate, i'll just ignore it or Probabbly delete it.  :]
