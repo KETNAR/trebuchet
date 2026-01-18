@@ -49,6 +49,7 @@ tcl::OptProc /selector {
     set base .mw.selector$SelectorDlogNumber
 
     toplevel $base
+    catch {wm iconphoto $base treb_icon_normal}
     wm title $base $title
     wm resizable $base 0 0
     place_window_default $base $parent
@@ -194,6 +195,14 @@ tcl::OptProc /selector {
 
 
 proc selector:update {base script {type "dummy"} {name "dummy"}} {
+    # Fix hyper confusing/harmless post-window-destroy error from happening
+    # by supressing any action being taken *after* window is destroyed.
+    # Which has been bothering me since the stone age of trebuchet.
+    # This is related to the 'invalid command name ".mw.selector1.listbox"'
+    # error from the file>'New world' dialog being closed by 'Add'
+    if {![winfo exists $base.listbox]} {
+        return
+    }
     set first [$base.listbox nearest 0]
     set sel [$base.listbox curselection]
     if {$sel != {}} {

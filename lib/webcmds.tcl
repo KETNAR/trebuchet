@@ -443,6 +443,7 @@ proc webcache:validate {url targfile cachefile command progress caption title fi
     if {!$quiet} {
         if {![winfo exists $progwin]} {
             toplevel     $progwin
+            catch {wm iconphoto $progwin treb_icon_normal}
             wm resizable $progwin 0 0
             place_window_default $progwin
             label    $progwin.label

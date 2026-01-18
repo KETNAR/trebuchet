@@ -76,6 +76,7 @@ tcl::OptProc /send_dlog {
         # CREATING WIDGETS
         ###################
         toplevel $wname
+        catch {wm iconphoto $wname treb_icon_normal}
         place_window_default $wname $parent
         wm resizable $wname 0 0
         wm title $wname $title

@@ -615,6 +615,12 @@ proc init {argc argv} {
     set treb_tool_dir [file join $treb_root_dir pkgs]
     set treb_cacerts_dir [file join $treb_root_dir cacerts]
 
+    # Use Treb2/Treb1 PNGs as the normal and attention window icons.
+    # The normal icon is applied to the root so all toplevels inherit it.
+    image create photo treb_icon_normal -file [file join $treb_root_dir icons Treb2.png]
+    image create photo treb_icon_alert  -file [file join $treb_root_dir icons Treb1.png]
+    catch {wm iconphoto . treb_icon_normal}
+
     image create photo ssl_icon_secure -file [file join $treb_lib_dir images locked.gif]
     image create photo ssl_icon_insecure -file [file join $treb_lib_dir images unlocked.gif]
 
@@ -664,6 +670,7 @@ if {[catch {init $argc $argv} mesg]} {
     set savedInfo $errorInfo
 
     set top [toplevel .tle]
+    catch {wm iconphoto $top treb_icon_normal}
     wm title $top "Trebuchet Error"
     text $top.t -font {Courier 10} -yscrollcommand {$top.sb set}
     scrollbar $top.sb -command {$top.t yview} -orient vert
@@ -1321,7 +1328,11 @@ proc directconnect {sok world notls} {
             update idletasks
             global treb_cacerts_dir
             set cafile [file join $treb_cacerts_dir "ca-bundle.crt"]
-            tls::import $sok -require 1 -cafile $cafile -cadir $treb_cacerts_dir -ssl2 0 -ssl3 0 -tls1 1 -command tls_command_cb
+            # Wrap the existing socket in TLS without forcing specific
+            # protocol versions.  Modern TclTLS chooses an appropriate
+            # protocol and we keep certificate decisions in the verify
+            # callback instead of hard-failing here.
+            tls::import $sok -require 0 -cafile $cafile -cadir $treb_cacerts_dir -command tls_command_cb
             wait_for_ssl_negotiation $sok $world
             return
         }
@@ -1889,6 +1900,7 @@ proc main {argc argv} {
         set tclurl "https://sourceforge.net/projects/trebuchet/"
         set mesg2 "This warning won't be shown again, once you save preferences."
         set base [toplevel .verwarn]
+        catch {wm iconphoto $base treb_icon_normal}
         label $base.icon -bitmap warning -foreground "#990"
         label $base.text -text $mesg -anchor sw -justify left -font $treb_fonts(sansserif)
         label $base.url -text $tclurl -anchor nw -justify left -foreground blue -font [concat $treb_fonts(sansserif) underline] -cursor hand2
@@ -2073,6 +2085,8 @@ proc vTclWindow.mw {base} {
     wm resizable $base 1 1
     wm title $base "Trebuchet Tk"
     wm iconname $base "TrebTk"
+    # Ensure the main window uses the standard Treb2 application icon.
+    catch {wm iconphoto $base treb_icon_normal}
     wm group $base $base
     wm command $base $argv0
     wm protocol $base WM_DELETE_WINDOW /quit

@@ -134,6 +134,7 @@ tcl::OptProc finddlog:new {
     }
     ###################
     toplevel $base -class Toplevel
+    catch {wm iconphoto $base treb_icon_normal}
     wm resizable $base 0 0
     wm deiconify $base
     wm transient $base $textwidget

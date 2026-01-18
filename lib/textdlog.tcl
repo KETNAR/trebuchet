@@ -25,6 +25,7 @@ tcl::OptProc textsenddlog:new {
         # CREATING WIDGETS
         ###################
         toplevel $base
+        catch {wm iconphoto $base treb_icon_normal}
         place_window_default $base $parent
         wm resizable $base 0 0
         wm title $base $title
@@ -831,6 +832,7 @@ tcl::OptProc textdlog:create {
         } else {
             toplevel $wname -menu $wname.mbar
         }
+        catch {wm iconphoto $wname treb_icon_normal}
         place_window_default $wname $parent
 
         menu $wname.mbar -tearoff false

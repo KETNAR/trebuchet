@@ -388,6 +388,7 @@ tcl::OptProc richview:create {
         } else {
             toplevel $wname -menu $wname.mbar
         }
+        catch {wm iconphoto $wname treb_icon_normal}
         place_window_default $wname $parent
 
         menu $wname.mbar -tearoff false

@@ -343,6 +343,7 @@ if {$tcl_platform(winsys) == "x11"} {
                 incr cwnum
             }
             toplevel $base
+            catch {wm iconphoto $base treb_icon_normal}
             wm title $base $title
             wm resizable $base 0 0
             if {$parent != ""} {

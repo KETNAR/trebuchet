@@ -508,6 +508,7 @@ namespace eval ComboBox {
         }
 
         toplevel $toplev -cursor top_left_arrow
+        catch {wm iconphoto $toplev treb_icon_normal}
         wm overrideredirect $toplev 1
         wm transient $toplev $wtop
 

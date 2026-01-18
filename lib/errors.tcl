@@ -66,6 +66,7 @@ proc /error {world msg {trace ""}} {
     set base $base$i
 
     toplevel $base
+    catch {wm iconphoto $base treb_icon_normal}
     wm title $base $title
     wm resizable $base 0 0
     wm transient $base .mw

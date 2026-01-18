@@ -159,7 +159,14 @@ proc /prefs:set {name val} {
     upvar #0 trebuchet_preferences var
     global dirty_preferences
     if {![/prefs:exists $name]} {
-        tk_messageBox -type ok -icon warning -title "Bad preference" -message "$name : Obsolete or non-existent preference setting. Ignored."
+        # Older trebpref files might have old pref settings that are no longer supported
+        # or have changed. These erorrs are non-fatal, and can be safely ignored. 
+        # The sudden (DING!) of a system alert at full volume at 4:30 AM on a 1200 watt
+        # surround sound system that should be playing the soothing sounds of babbling 
+        # brooks and waterfall ambiance? 
+        # Not so much. 
+        # So lets (..quietly..) delegate it down to the statbar log instead.
+        /statbar 5 "$name: Obsolete or non-existent preference setting. Ignored."
         set dirty_preferences 1
     } else {
         if {$var(type,$name) == "cust"} {
@@ -727,6 +734,7 @@ proc /prefs:edit {} {
         }
 
         toplevel $base
+        catch {wm iconphoto $base treb_icon_normal}
         wm resizable $base 0 0
         wm protocol $base WM_DELETE_WINDOW "$base.cancel invoke"
         wm title $base "Preferences"

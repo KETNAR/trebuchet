@@ -137,6 +137,7 @@ proc simpleedit_content {world data} {
         }
     }
     toplevel $base
+    catch {wm iconphoto $base treb_icon_normal}
     wm resizable $base 1 1
     wm title $base "SimpleEdit - $world"
     place_window_default $base

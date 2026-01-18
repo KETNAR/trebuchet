@@ -39,6 +39,7 @@ proc /spell:check {{wname ""}} {
     }
 
     toplevel $win -class Toplevel
+    catch {wm iconphoto $win treb_icon_normal}
     if {$tcl_platform(winsys) == "aqua"} {
         if {[info commands ::tk::unsupported::MacWindowStyle] != ""} {
             # If the command exists, make this window a tool window.

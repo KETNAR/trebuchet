@@ -516,6 +516,24 @@ proc socket:blink_lights {} {
     } elseif {[wm title .mw] != "$curr - TrebTk"} {
         wm title .mw "$curr - TrebTk"
     }
+    # On non-Aqua platforms, also flip the window icon between Treb2 (normal)
+    # and Treb1 (alert) while the "flash window title on activity" preference
+    # is enabled and there is background activity.  This makes the taskbar
+    # indicator more visible when many taskbar items are squished together.
+    # Tied to the 'flash taskbar on background activity' preference toiggle.`
+    if {$tcl_platform(winsys) != "aqua"} {
+        if {[info commands treb_icon_normal] != "" && [winfo exists .mw]} {
+            if {$titleflash && $isbg} {
+                if {$socket_blinkenlight_flag && [info commands treb_icon_alert] != ""} {
+                    catch {wm iconphoto .mw treb_icon_alert}
+                } else {
+                    catch {wm iconphoto .mw treb_icon_normal}
+                }
+            } else {
+                catch {wm iconphoto .mw treb_icon_normal}
+            }
+        }
+    }
 
     if {!$isbg} {
         set treb_icon_should_bounce 0

@@ -9,6 +9,7 @@ if {[info commands tls::init] != {}} {
         global pwvalue
 
         set base [toplevel .pw]
+        catch {wm iconphoto $base treb_icon_normal}
         wm title .pw "Certificate Password"
         
         label .pw.l -text "Enter the password for your SSL certificate"
@@ -77,6 +78,7 @@ proc tls_error_query {world errtxt cert} {
     global tls_dlog_noauth
     set tls_dlog_noauth [/world:get noauth $world]
     toplevel $base
+    catch {wm iconphoto $base treb_icon_normal}
     wm title $base "Certificate authentication"
     wm resizable $base 0 0
     place_window_default $base .mw
@@ -140,6 +142,13 @@ tcl::OptProc /tls:showcert {
             return
         }
         array set c $stat
+        # Newer TclTLS builds may not return a serial field in the
+        # tls::status dictionary.  Fall back to a placeholder so the
+        # dialog remains functional on both old and new versions.
+        set serial "N/A"
+        if {[info exists c(serial)]} {
+            set serial $c(serial)
+        }
         /textdlog -buttons -title "Certificate Info" \
             -width 40 -height 19 -nowrap -readonly -text \
 "Subject:
@@ -148,7 +157,7 @@ tcl::OptProc /tls:showcert {
 Issuer:
 [tls_cn_text $c(issuer)]
 
-Serial#: $c(serial)
+Serial#: $serial
 Valid after: $c(notBefore)
 Valid until: $c(notAfter)
 
@@ -167,6 +176,9 @@ proc tls_command_cb {option args} {
         }
     }
 
+    # Modern TclTLS versions may invoke this callback with additional
+    # options beyond "error", "info" and "verify".  Treat unknown
+    # options as no-ops so newer libraries remain compatible.
     switch -- $option {
         "error" {
             foreach {msg} $args break
@@ -228,8 +240,12 @@ proc tls_command_cb {option args} {
                 append state ": $msg"
             }
         }
+        "message" {
+        }
+        "session" {
+        }
         default {
-            return -code error "bad option \"$option\": must be one of error, info, or verify"
+            return
         }
     }
 }
@@ -252,8 +268,11 @@ proc tls_status_set {sok val} {
 
 proc tls_startup {sok world} {
     global treb_cacerts_dir
-    tls::import $sok -require 1 \
-            -ssl2 0 -ssl3 0 -tls1 1 \
+    # Use a permissive verification policy here (-require 0) and rely
+    # on the verify callback and user choice instead of failing the
+    # connection outright.  This matches current TclTLS defaults where
+    # protocol selection is handled by the library.
+    tls::import $sok -require 0 \
             -cadir $treb_cacerts_dir \
             -command tls_command_cb
     tls_status_set $sok "nego"

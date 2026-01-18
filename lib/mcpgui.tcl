@@ -464,6 +464,7 @@ proc fbgui-dlog-create {world data} {
 
     set McpGuiInfo($world,toplevel,$dlogid) $toplev
     toplevel $toplev
+    catch {wm iconphoto $toplev treb_icon_normal}
     wm title $toplev "$world - $title"
     wm withdraw $toplev
 

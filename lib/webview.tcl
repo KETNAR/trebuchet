@@ -151,14 +151,17 @@ proc windows:openfile {file {ext ""}} {
     eval exec $appcmd &
 }
 
-
+# Updated to more properly spawn a browser on win-os
+# Old system tried to use .html as a file handler to trick-load.
+# This assumes you only have .html files associated with your browser of choice.
+# I personally associate my .html files to MACROMEDIA DREAMWEAVER 1.0
+# So imagine my shock when windows 98 suddenly appeared in a delorean
+# just to make that happen.
+# Now we just poke the registry with a fork and it pukes up our default browser for us.
 proc webview:windows {url} {
     global mail_regexp2
 
-    # regsub -all "\"" $url {%22} url
     regsub -all {\)} $url {%29} url
-    # regsub -all {,} $url {%2C} url
-    set ext ".html"
     if {![regexp {^[a-zA-Z]+:} $url]} {
         if {[regexp "^$mail_regexp2\$" $url]} {
             set url mailto:$url
@@ -168,6 +171,9 @@ proc webview:windows {url} {
             set url http://$url
         }
     }
-    windows:openfile $url $ext
+    catch {/statbar 5 "Spawning browser to view URL."}
+    if {[catch {exec rundll32.exe url.dll,FileProtocolHandler $url &} result]} {
+        catch {/statbar 5 "Unable to spawn web browser: $result"}
+    }
 }
 

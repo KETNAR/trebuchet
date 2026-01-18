@@ -323,6 +323,7 @@ proc editdlog:newdlog {wname class cmd {defname ""}} {
     # CREATING WIDGETS
     ###################
     toplevel $base
+    catch {wm iconphoto $base treb_icon_normal}
     wm minsize $base 200 150
     wm overrideredirect $base 0
     wm resizable $base 0 0
@@ -425,6 +426,7 @@ proc editdlog:new {wname wintitle class cmd} {
     # CREATING WIDGETS #
     ####################
     toplevel $base -class EditWin
+    catch {wm iconphoto $base treb_icon_normal}
     bind $base <Key-Escape> "$base.buttons.done   invoke ; break"
     bind $base <Alt-Key-n>  "$base.buttons.new    invoke ; break"
     bind $base <Alt-Key-a>  "$base.buttons.add    invoke ; break"
