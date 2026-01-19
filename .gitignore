@@ -1,0 +1,4 @@
+/Starkit_builder/work/
+/Starkit_builder/*.exe
+/Starkit_builder/*.kit
+/Starkit_builder/*.bat
