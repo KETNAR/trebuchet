@@ -2,3 +2,5 @@
 /Starkit_builder/*.exe
 /Starkit_builder/*.kit
 /Starkit_builder/*.bat
+/Starkit_builder/ResourceHacker.exe
+/Starkit_builder/ResourceHacker.ini

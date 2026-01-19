@@ -49,6 +49,9 @@
 # Outputs:
 #   Starkit_builder/<app>.kit  - self-contained Starkit
 #   Starkit_builder/<app>.exe  - Windows EXE (if runtime found)
+#
+# PS: If you dump ResourceHacker.exe in the same dir as this file, you can update the resulting 
+#     exe to use any ico file you want. Otherwise it will just carry on without this step.
 
 set script_dir [file dirname [file normalize [info script]]]
 set project_root [file dirname $script_dir]
@@ -122,9 +125,20 @@ proc write_main {kit_root} {
     set main_path [file join $kit_root "main.tcl"]
     set fh [open $main_path w]
     puts $fh {set here [file dirname [file normalize [info script]]]}
-    puts $fh {set ::argv0 [file join $here Trebuchet.tcl]}
-    puts $fh {cd $here}
-    puts $fh {source [file join $here Trebuchet.tcl]}
+    puts $fh {if {[info exists ::starkit::topdir]} {
+    set app_root $::starkit::topdir
+} else {
+    set app_root $here
+}}
+    puts $fh {set libdir [file join $app_root lib]}
+    puts $fh {if {[file isdirectory $libdir]} {
+    if {[lsearch -exact $::auto_path $libdir] < 0} {
+        lappend ::auto_path $libdir
+    }
+}}
+    puts $fh {set ::argv0 [file join $app_root Trebuchet.tcl]}
+    puts $fh {cd $app_root}
+    puts $fh {source $::argv0}
     close $fh
 }
 empty_dir $work_root
@@ -153,6 +167,19 @@ if {$runtime_exe ne ""} {
     if {$code != 0} {
         puts stderr "sdx wrap for exe failed: $result"
         exit 1
+    }
+    set res_hacker [file join $script_dir "ResourceHacker.exe"]
+    set ico_path [file join $project_root "icons" "Treb.ico"]
+    if {[file exists $res_hacker] && [file exists $ico_path]} {
+        set rh_cmd [list $res_hacker -open $output_exe -save $output_exe -action addoverwrite -res $ico_path -mask ICONGROUP,MAINICON,]
+        set rh_code [catch {eval exec $rh_cmd} rh_result]
+        if {$rh_code != 0} {
+            puts stderr "warning: ResourceHacker icon update failed: $rh_result"
+        }
+    } elseif {[file exists $ico_path]} {
+        puts stderr "note: ResourceHacker.exe not found, skipping icon update"
+    } elseif {[file exists $res_hacker]} {
+        puts stderr "note: Treb.ico not found, skipping icon update"
     }
 }
 exit 0
