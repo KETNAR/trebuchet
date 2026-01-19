@@ -105,6 +105,19 @@ proc copy_file_list {project_root kit_root} {
         file copy -force $src $dst
     }
 }
+proc copy_tls {tcl_root kit_root} {
+    set tls_dir [file join $tcl_root lib tls2.0b3]
+    if {![file isdirectory $tls_dir]} {
+        return
+    }
+    set dest_parent [file join $kit_root lib]
+    ensure_dir $dest_parent
+    set dest [file join $dest_parent tls2.0b3]
+    if {[file exists $dest]} {
+        file delete -force $dest
+    }
+    file copy -force -- $tls_dir $dest
+}
 proc write_main {kit_root} {
     set main_path [file join $kit_root "main.tcl"]
     set fh [open $main_path w]
@@ -117,6 +130,7 @@ proc write_main {kit_root} {
 empty_dir $work_root
 empty_dir $kit_root
 copy_file_list $project_root $kit_root
+copy_tls $tcl_root $kit_root
 write_main $kit_root
 if {![file exists $sdx_kit]} {
     error "sdx.kit not found at $sdx_kit"
